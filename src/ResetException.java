@@ -1,0 +1,2 @@
+
+class ResetException extends Exception { };
