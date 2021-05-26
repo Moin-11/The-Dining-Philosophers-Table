@@ -1,15 +1,19 @@
 import javax.swing.*;
 public class Main{ 
+
+
+
+
     private static final int ContainerPanelSize = 360;
     private void start(final RootPaneContainer pane, final boolean bool) {
 
-        final Coordinator mainCoordinator = new Coordinator();
-        final TableModel philosopherstable = new TableModel(mainCoordinator, ContainerPanelSize);
+        final StateManagement StateManager = new StateManagement();
+        final TableCanvas philosopherstable = new TableCanvas(StateManager, ContainerPanelSize);
        
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
-                    new UIView(pane, mainCoordinator, philosopherstable, bool);
+                    new ApplicationUI(pane, StateManager, philosopherstable, bool);
                 }
             });
             

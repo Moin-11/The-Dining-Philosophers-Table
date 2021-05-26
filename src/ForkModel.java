@@ -2,7 +2,7 @@ import java.awt.*;
 
 class ForkModel {
 
-    private TableModel maintable;
+    private TableCanvas maintable;
     private static final int radius = 10;
     private Color color = Color.black; 
     
@@ -10,10 +10,11 @@ class ForkModel {
     private int orig_x;
     private int orig_y; 
 
+    /*Stores the current coordinates of forks */
     private int current_x;
     private int current_y;
 
-    public ForkModel(TableModel T, int cx, int cy) {
+    public ForkModel(TableCanvas T, int cx, int cy) {
         maintable = T;
 
         orig_x = cx;
@@ -40,10 +41,10 @@ class ForkModel {
     }
 
     
-    public boolean acquire(int px, int py) {
+    public boolean BelongToPhil(int phil_x, int phil_y) {
         clear();
-        current_x = (orig_x + px)/2;
-        current_y = (orig_y + py)/2;
+        current_x = (orig_x + phil_x)/2;
+        current_y = (orig_y + phil_y)/2;
         this.color = Color.green;
         maintable.repaint();
 

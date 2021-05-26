@@ -10,8 +10,8 @@ class PhilosopherModel implements Runnable {
     private static final double WAIT_TIME = 2.0;
     private static final double EAT_TIME = 2.0;
     
-    private Coordinator maincoordinator;
-    private TableModel philosopherstable;
+    private StateManagement maincoordinator;
+    private TableCanvas philosopherstable;
     
     private static final int XSIZE = 50;
     private static final int YSIZE = 50;
@@ -27,7 +27,7 @@ class PhilosopherModel implements Runnable {
 
     
 
-    public PhilosopherModel(TableModel T, int cx, int cy, ForkModel lf, ForkModel rf, Coordinator C) {
+    public PhilosopherModel(TableCanvas T, int cx, int cy, ForkModel lf, ForkModel rf, StateManagement C) {
         philosopherstable = T;
         current_x = cx;
         current_y = cy;
@@ -40,25 +40,25 @@ class PhilosopherModel implements Runnable {
 
    
 
-    public Random getRndom() {
+    public Random getRandom() {
         return random;
     }
 
 
 
-    public void setRndom(Random rndom) {
+    public void setRandom(Random rndom) {
         this.random = rndom;
     }
 
 
 
-    public Color getOlor() {
+    public Color getColor() {
         return color;
     }
 
 
 
-    public void setOlor(Color olor) {
+    public void setColor(Color olor) {
         this.color = olor;
     }
 
@@ -100,25 +100,25 @@ class PhilosopherModel implements Runnable {
 
 
 
-    public TableModel getPhilosopherstable() {
+    public TableCanvas getPhilosophersTable() {
         return philosopherstable;
     }
 
 
 
-    public void setPhilosopherstable(TableModel philosopherstable) {
+    public void setPhilosophersTable(TableCanvas philosopherstable) {
         this.philosopherstable = philosopherstable;
     }
 
 
 
-    public Coordinator getMainCoordinator() {
+    public StateManagement getMainCoordinator() {
         return maincoordinator;
     }
 
 
 
-    public void setMainCoordinator(Coordinator mainCoordinator) {
+    public void setMainCoordinator(StateManagement mainCoordinator) {
         this.maincoordinator = mainCoordinator;
     }
 
@@ -136,16 +136,16 @@ class PhilosopherModel implements Runnable {
         while(true) {
             try {
                 if (getMainCoordinator().gate())
-                 delay(EAT_TIME);
+                 Sleep(EAT_TIME);
 
                 think();
                 if (getMainCoordinator().gate())
                 
-                delay(THINK_TIME);
+                Sleep(THINK_TIME);
                 hunger();
                 
                 if (getMainCoordinator().gate())
-                delay(WAIT_TIME);
+                Sleep(WAIT_TIME);
                 eat();
 
             } catch(ResetException e) { 
@@ -156,9 +156,11 @@ class PhilosopherModel implements Runnable {
     }
 
 
-    private static final double arbitary = 0.2;
     
-    private void delay(double secs) throws ResetException {
+    private void Sleep(double secs) throws ResetException {
+        
+        double arbitary = 0.2;
+
         double miliseconds = 1000 * secs;
         int window = (int) (2.0 * miliseconds * arbitary);
 
@@ -186,7 +188,7 @@ class PhilosopherModel implements Runnable {
     private synchronized void think() throws ResetException {
         color = THINK_COLOR;
         philosopherstable.repaint();
-        delay(THINK_TIME);
+        Sleep(THINK_TIME);
     }
 
     private synchronized void hunger() throws ResetException {
@@ -195,11 +197,11 @@ class PhilosopherModel implements Runnable {
                 
         color = WAIT_COLOR;
         philosopherstable.repaint();
-        delay(WAIT_TIME);
+        Sleep(WAIT_TIME);
 
-        left_fork.acquire(current_x, current_y);
+        left_fork.BelongToPhil(current_x, current_y);
         Thread.yield();    
-        right_fork.acquire(current_x, current_y);
+        right_fork.BelongToPhil(current_x, current_y);
             }}
     }
 
@@ -209,7 +211,7 @@ class PhilosopherModel implements Runnable {
             synchronized(right_fork){
         color = EAT_COLOR;
         philosopherstable.repaint();
-        delay(EAT_TIME);
+        Sleep(EAT_TIME);
 
         left_fork.release();
         Thread.yield();    

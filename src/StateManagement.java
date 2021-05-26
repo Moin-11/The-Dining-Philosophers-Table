@@ -20,7 +20,7 @@
 // visible on the screen, and to notify all RUN threads when the user
 // wants them to reset.
 //
-class Coordinator {
+class StateManagement {
     public enum State {PAUSED, RUN, RESET}
 
 

@@ -2,14 +2,14 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-class UIView extends JPanel {
+class ApplicationUI extends JPanel {
 
-    private final Coordinator mainCoordinator;
-    private TableModel philosopherstable;
+    private final StateManagement mainCoordinator;
+    private TableCanvas philosopherstable;
 
     private final JRootPane root;
 
-    public UIView(RootPaneContainer pane, Coordinator C, TableModel T, boolean bool) { 
+    public ApplicationUI(RootPaneContainer pane, StateManagement C, TableCanvas T, boolean bool) { 
      
         mainCoordinator = C;
         philosopherstable = T;

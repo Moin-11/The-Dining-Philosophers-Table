@@ -6,12 +6,12 @@ import javax.swing.*;
 
 // Graphics panel in which philosophers and forks appear.
 //
-class TableModel extends JPanel { // View
+class TableCanvas extends JPanel { // View
 
-    private static int NUM_PHILS = 100; // default value (needs to be changed)
+    private static int NumberOfPhilosophers = 100; // default value (needs to be changed)
 
     // following fields are set by constructor:
-    private final Coordinator mainCoordinator;
+    private final StateManagement StateManager;
     private final int CanvasSize;
 
     private ArrayList<ForkModel> forks; // array of forks
@@ -20,12 +20,12 @@ class TableModel extends JPanel { // View
 
 
     public void setPhilCount(int philCount){
-    TableModel.NUM_PHILS = philCount;
+    TableCanvas.NumberOfPhilosophers = philCount;
     }
 
     public synchronized void pause() { // pauses the entire UI
-            mainCoordinator.pause();
-            for (int i = 0; i < NUM_PHILS; i++) {
+            StateManager.pause();
+            for (int i = 0; i < NumberOfPhilosophers; i++) {
                 runningThreads.get(i).interrupt();
         }
     }
@@ -33,12 +33,12 @@ class TableModel extends JPanel { // View
     // Called by the UI when it wants to start over.
     //
     public synchronized void reset() {
-        mainCoordinator.reset();
+        StateManager.reset();
         // force philosophers to notice change in coordinator state:
-        for (int i = 0; i < NUM_PHILS; i++) {
+        for (int i = 0; i < NumberOfPhilosophers; i++) {
             runningThreads.get(i).interrupt();
         }
-        for (int i = 0; i < NUM_PHILS; i++) {
+        for (int i = 0; i < NumberOfPhilosophers; i++) {
             forks.get(i).reset();
         }
     }
@@ -52,7 +52,7 @@ class TableModel extends JPanel { // View
     public synchronized void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        for (int i = 0; i < NUM_PHILS; i++) {
+        for (int i = 0; i < NumberOfPhilosophers; i++) {
             forks.get(i).draw(g);
             philosophers.get(i).draw(g);
         }
@@ -71,22 +71,22 @@ class TableModel extends JPanel { // View
 public synchronized void Propagate(){
   
     // Propagate the Fork Circles
-   for (int i = 0; i < NUM_PHILS; i++) {
-    double angle = Math.PI/2 + 2*Math.PI/NUM_PHILS*(i-0.5);
+   for (int i = 0; i < NumberOfPhilosophers; i++) {
+    double angle = Math.PI/2 + 2*Math.PI/NumberOfPhilosophers*(i-0.5);
     forks.add( new ForkModel(this,
         (int) (CanvasSize/2.0 + CanvasSize/6.0 * Math.cos(angle)),
         (int) (CanvasSize/2.0 - CanvasSize/6.0 * Math.sin(angle))));
 }
 
 // Propagate the Philosopher circles
-for (int i = 0; i < NUM_PHILS; i++) {
-        double angle = Math.PI/2 + 2*Math.PI/NUM_PHILS*i;
+for (int i = 0; i < NumberOfPhilosophers; i++) {
+        double angle = Math.PI/2 + 2*Math.PI/NumberOfPhilosophers*i;
         philosophers.add(  new PhilosopherModel(this,
         (int) (CanvasSize/2.0 + CanvasSize/3.0 * Math.cos(angle)),
         (int) (CanvasSize/2.0 - CanvasSize/3.0 * Math.sin(angle)),
         forks.get(i),
-        forks.get((i+1) % NUM_PHILS),
-        mainCoordinator));
+        forks.get((i+1) % NumberOfPhilosophers),
+        StateManager));
        synchronized(this){ Thread t = new Thread(philosophers.get(i), "Philosopher " + (i + 1));
         runningThreads.add(t);
         t.start();
@@ -103,8 +103,8 @@ Propagate();
 
  
 }
-    public TableModel(Coordinator C, int CANVAS_SIZE) {    // constructor
-        mainCoordinator = C;
+    public TableCanvas(StateManagement S, int CANVAS_SIZE) {    // constructor
+        StateManager = S;
         CanvasSize = CANVAS_SIZE;
         forks =new ArrayList<>();
         philosophers = new ArrayList<>();
